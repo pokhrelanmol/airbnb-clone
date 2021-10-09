@@ -13,7 +13,7 @@ const Header = () => {
       {/* left */}
       <div className="relative flex h-10 cursor-pointer my-auto   ">
         <Image
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Airbnb_Logo_B%C3%A9lo.svg/2560px-Airbnb_Logo_B%C3%A9lo.svg.png"
+          src="https://links.papareact.com/qd3"
           layout="fill"
           objectFit="contain"
           objectPosition="left"
