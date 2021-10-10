@@ -1,6 +1,6 @@
 const Footer = () => {
   return (
-    <div className=" grid  grid-cols-2 lg:grid-cols-4 gap-3 p-5">
+    <div className=" grid  grid-cols-2 lg:grid-cols-4 gap-3 p-5 bg-gray-100">
       <div className=" text-xs text-gray-800 space-y-2">
         <h1 className="font-bold">About</h1>
         <p className=" hover:underline cursor-pointer hover:text-gray-500 ">

@@ -7,7 +7,7 @@ import Hero from "../components/Hero";
 import LargeCard from "../components/LargeCard";
 import MediumCard from "../components/MediumCard";
 import SmallCards from "../components/SmallCards";
-
+import uniqId from "uniqid";
 export default function Home({ exploreData, cardData }) {
   return (
     <div>
@@ -24,9 +24,9 @@ export default function Home({ exploreData, cardData }) {
           </h2>
           {/* pull data from the server */}
           <div className="grid  sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {exploreData?.map((item, key) => (
+            {exploreData?.map((item) => (
               <SmallCards
-                key={key}
+                key={uniqId()}
                 image={item.img}
                 location={item.location}
                 distance={item.distance}
@@ -40,7 +40,7 @@ export default function Home({ exploreData, cardData }) {
           </h2>
           <div className="flex space-x-5 overflow-scroll scrollbar-hide">
             {cardData?.map(({ img, title }) => (
-              <MediumCard key={image} image={img} title={title} />
+              <MediumCard key={uniqId()} image={img} title={title} />
             ))}
           </div>
         </section>
@@ -48,7 +48,7 @@ export default function Home({ exploreData, cardData }) {
           <LargeCard />
         </section>
       </main>
-      <footer className="max-w-7xl mx-auto px-5 sm:px-16 bg-gray-100">
+      <footer className="max-w-7xl mx-auto px-5 sm:px-16">
         <Footer />
       </footer>
     </div>
