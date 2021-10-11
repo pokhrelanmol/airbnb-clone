@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { useRouter } from "next/dist/client/router";
 import uniqId from "uniqid";
 import InfoCard from "../components/InfoCard";
+import Map from "../components/Map";
 const Search = ({ searchResults }) => {
   const router = useRouter();
   const { location, startDate, endDate, noOfGuests } = router.query;
@@ -20,7 +21,14 @@ const Search = ({ searchResults }) => {
       <main className="flex">
         <section className="flex-grow pt-14 px-6">
           <p className="text-xs">
-            300+ stays from {formatDate(startDate)}-{formatDate(endDate)}
+            300+ stays from
+            <span className="p-1 bg-red-400 rounded-xl text-white mx-1">
+              {formatDate(startDate)}
+            </span>
+            to
+            <span className="p-1 bg-red-400  rounded-xl text-white mx-1">
+              {formatDate(endDate)}
+            </span>
             for {noOfGuests} guests
           </p>
           <h1 className="text-3xl font-semibold my-8">Stays in {location}</h1>
@@ -59,6 +67,9 @@ const Search = ({ searchResults }) => {
               )
             )}
           </div>
+        </section>
+        <section className="hidden lg:inline-flex lg:min-w-[500px]">
+          <Map searchResults={searchResults} />
         </section>
       </main>
       <Footer />
