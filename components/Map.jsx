@@ -5,9 +5,9 @@ import ReactMapGL, { Marker, Popup } from "react-map-gl";
 
 const Map = ({ searchResults }) => {
   // tranform api into this format { latitude: 52.516272, longitude: 13.377722 }, so we can use it with map
-  const coordinates = searchResults.map((item) => ({
-    longitude: item.long,
-    latitude: item.lat,
+  const coordinates = searchResults?.map((item) => ({
+    longitude: item.longitude,
+    latitude: item.latitude,
   }));
   const [selectedLocation, setSelectedLocation] = React.useState({});
   const center = getCenter(coordinates);
@@ -27,7 +27,7 @@ const Map = ({ searchResults }) => {
     >
       {searchResults.map((item) => (
         <div key={uniqId()}>
-          <Marker latitude={item.lat} longitude={item.long}>
+          <Marker latitude={item.latitude} longitude={item.longitude}>
             <p
               role="img"
               aria-label="location"
@@ -57,14 +57,14 @@ const Map = ({ searchResults }) => {
             </p>
           </Marker>
           {/* popup on marker click */}
-          {selectedLocation.lat === item.lat ? (
+          {selectedLocation.latitude === item.latitude ? (
             <Popup
               onClose={() => setSelectedLocation({})}
               closeOnClick={true}
-              latitude={item.lat}
-              longitude={item.long}
+              latitude={item.latiude}
+              longitude={item.longitude}
             >
-              {item.title}
+              {item.address}
             </Popup>
           ) : (
             false

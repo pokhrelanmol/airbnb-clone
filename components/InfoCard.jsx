@@ -36,8 +36,9 @@ const InfoCard = ({
             {star}
           </p>
           <div className="">
-            <p className="text-lg font-semibold pb-2 lg:text-2xl">{price}</p>
-            <p className="text-right font-extralight">{total}</p>
+            <p className="text-lg font-semibold pb-2 lg:text-2xl">
+              {price} INR
+            </p>
           </div>
         </div>
       </div>

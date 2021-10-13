@@ -4,13 +4,15 @@ import { format } from "date-fns";
 import { useRouter } from "next/dist/client/router";
 import uniqId from "uniqid";
 import InfoCard from "../components/InfoCard";
+import axios from "axios";
 import Map from "../components/Map";
-const Search = ({ searchResults }) => {
+const formatDate = (dateInString) => {
+  return format(new Date(dateInString), "yyyy-MM-dd");
+};
+const Search = ({ getHotelDetailsDatas }) => {
   const router = useRouter();
   const { location, startDate, endDate, noOfGuests } = router.query;
-  const formatDate = (dateInString) => {
-    return format(new Date(dateInString), "dd MMMM yy");
-  };
+
   return (
     <div>
       <Header
@@ -40,36 +42,26 @@ const Search = ({ searchResults }) => {
             <p className="button">More filters</p>
           </div>
           <div className="flex flex-col">
-            {searchResults.map(
-              ({
-                img,
-                location,
-                title,
-                description,
-                star,
-                price,
-                total,
-                long,
-                lat,
-              }) => (
+            {getHotelDetailsDatas.map((items) => (
+              <a href={items.url}>
                 <InfoCard
                   key={uniqId()}
-                  img={img}
-                  location={location}
-                  title={title}
-                  description={description}
-                  star={star}
-                  price={price}
-                  total={total}
-                  long={long}
-                  lat={lat}
+                  img={items.main_photo_url}
+                  location={items.address}
+                  title={items.hotel_name}
+                  description={items.address}
+                  star={items.class}
+                  price={items.price_breakdown.all_inclusive_price}
+                  total={items.price_breakdowngross_price}
+                  long={items.latitude}
+                  lat={items.longitude}
                 />
-              )
-            )}
+              </a>
+            ))}
           </div>
         </section>
         <section className="hidden lg:inline-flex lg:min-w-[500px]">
-          <Map searchResults={searchResults} />
+          <Map searchResults={getHotelDetailsDatas} />
         </section>
       </main>
       <Footer />
@@ -80,13 +72,65 @@ const Search = ({ searchResults }) => {
 export default Search;
 // special name function for server side rendering in next js
 
-export const getServerSideProps = async () => {
-  const searchResults = await fetch("https://links.papareact.com/isz").then(
-    (res) => res.json()
-  );
-  return {
-    props: {
-      searchResults,
+export const getServerSideProps = async (context) => {
+  // first try to get the destination id from this endpoint the search for hotels using this id
+  const { location, startDate, endDate, noOfGuests } = context.query;
+  const optionsToGetLocation = {
+    method: "GET",
+    url: "https://booking-com.p.rapidapi.com/v1/hotels/locations",
+    params: { name: location, locale: "en-gb" },
+    headers: {
+      "x-rapidapi-host": "booking-com.p.rapidapi.com",
+      "x-rapidapi-key": "145f049ea3msh553a0d66377dfb5p17847fjsnf2c24e7bcb93",
     },
   };
+
+  let getLocationData;
+  try {
+    const getLocation = await axios.request(optionsToGetLocation);
+    getLocationData = await getLocation.data[1];
+    console.log(getLocationData.dest_id);
+  } catch {
+    console.log("error");
+  }
+
+  //   now lets grab the list of hotel using destination id
+  const getHotelLists = {
+    method: "GET",
+    url: "https://booking-com.p.rapidapi.com/v1/hotels/search",
+    params: {
+      locale: "en-gb",
+      room_number: "1",
+      checkout_date: formatDate(endDate),
+      order_by: "popularity",
+      units: "metric",
+      adults_number: noOfGuests,
+      filter_by_currency: "INR",
+      checkin_date: formatDate(startDate),
+      dest_type: "hotel",
+      dest_id: getLocationData.dest_id,
+      children_number: "2",
+      page_number: "0",
+      categories_filter_ids: "facility::107,free_cancellation::1",
+      children_ages: "5,0",
+    },
+    headers: {
+      "x-rapidapi-host": "booking-com.p.rapidapi.com",
+      "x-rapidapi-key": "145f049ea3msh553a0d66377dfb5p17847fjsnf2c24e7bcb93",
+    },
+  };
+
+  try {
+    const getHotelDetails = await axios.request(getHotelLists);
+    console.log(getHotelDetails);
+    const getHotelDetailsDatas = await getHotelDetails.data.result;
+
+    return {
+      props: {
+        getHotelDetailsDatas,
+      },
+    };
+  } catch (err) {
+    console.log(err.message);
+  }
 };
