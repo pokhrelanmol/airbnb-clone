@@ -55,9 +55,9 @@ export default function Home({ exploreData, cardData }) {
   );
 }
 export const getStaticProps = async () => {
-  const exploreData = await fetch("https://links.papareact.com/pyp").then(
-    (res) => res.json()
-  );
+  const exploreData = await fetch("https://links.papareact.com/pyp")
+    .then((res) => res.json())
+    .catch(console.log(Error));
   const cardData = await fetch("https://links.papareact.com/zp1").then((res) =>
     res.json()
   );
